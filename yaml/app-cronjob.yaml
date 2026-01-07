@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: my-app-cronjob
+  labels:
+    app: my-app
+spec:
+  schedule: "*/1 * * * *"
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        metadata:
+          labels:
+            app: my-app
+        spec:
+          containers:
+            - name: my-app
+              image: my-app:1.0.0
+              imagePullPolicy: IfNotPresent
+              args:
+                - /bin/sh
+                - -c
+                - |
+                  date
+                  echo "Hello from the Kubernetes CronJob"
+          restartPolicy: OnFailure
